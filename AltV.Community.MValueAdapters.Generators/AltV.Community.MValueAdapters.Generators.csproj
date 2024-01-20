@@ -8,7 +8,7 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <Nullable>enable</Nullable>
         <PackageId>AltV.Community.MValueAdapters.Generators</PackageId>
-        <Version>0.1.0</Version>
+        <Version>0.1.6</Version>
         <Authors>deluvas1911,duydang2311</Authors>
         <Product>Generators</Product>
         <PackageTags>altv,gtav,gta5,roslyn-generator</PackageTags>
@@ -20,6 +20,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\AltV.Community.MValueAdapters.Generators.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\AltV.Community.MValueAdapters.Generators.Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="IsExternalInit" Version="1.0.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,7 +34,13 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AltV.Community.MValueAdapters.Generators.Abstractions\AltV.Community.MValueAdapters.Generators.Abstractions.csproj" Version="0.1.5" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

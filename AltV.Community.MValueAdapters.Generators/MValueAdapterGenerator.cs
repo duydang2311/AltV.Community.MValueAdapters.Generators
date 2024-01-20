@@ -51,14 +51,6 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterPostInitializationOutput(i =>
-        {
-            i.AddSource(
-                "MValueAdapters.Generators.Attributes.g.cs",
-                SourceText.From(Attributes.FileTemplate, Encoding.UTF8)
-            );
-        });
-
         var mValues = context
             .SyntaxProvider
             .CreateSyntaxProvider(
@@ -82,7 +74,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     continue;
 
                 var fqName = attributeSymbol.ContainingType.ToString();
-                if (fqName != $"AltV.Community.MValueAdapters.Generators.{Attributes.MValueAdapterAttributeName}") continue;
+                if (!fqName.Equals("AltV.Community.MValueAdapters.Generators.MValueAdapterAttribute", StringComparison.Ordinal)) continue;
 
                 return new(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax));
             }
@@ -140,10 +132,10 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     var fqName = attributeSymbol.ContainingType.ToString();
                     switch (fqName)
                     {
-                        case Attributes.MValueIgnoreAttributeName:
+                        case "AltV.Community.MValueAdapters.Generators.MValueIgnoreAttribute":
                             skipProperty = true;
                             break;
-                        case Attributes.MValuePropertyNameAttributeName:
+                        case "AltV.Community.MValueAdapters.Generators.MValuePropertyNameAttribute":
                             customName = attributeSyntax.ArgumentList!.Arguments[0].ToString();
                             break;
                     }
