@@ -82,7 +82,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     continue;
 
                 var fqName = attributeSymbol.ContainingType.ToString();
-                if (fqName != $"AltV.Community.MValueAdapters.Generators.{Attributes.MValueConverterAttributeName}") continue;
+                if (fqName != $"AltV.Community.MValueAdapters.Generators.{Attributes.MValueAdapterAttributeName}") continue;
 
                 return new(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax));
             }

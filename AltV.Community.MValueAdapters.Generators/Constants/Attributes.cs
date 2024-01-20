@@ -2,7 +2,7 @@ namespace AltV.Community.MValueAdapters.Generators.Constants;
 
 internal static class Attributes
 {
-    internal const string MValueConverterAttributeName = "MValueConverterAttribute";
+    internal const string MValueAdapterAttributeName = "MValueAdapterAttribute";
     internal const string MValueIgnoreAttributeName = "MValueIgnoreAttribute";
     internal const string MValuePropertyNameAttributeName = "MValuePropertyNameAttribute";
 
@@ -14,10 +14,10 @@ internal static class Attributes
 namespace AltV.Community.MValueAdapters.Generators;
 
 /// <summary>
-/// Indicates that a value converter should be generated for the associated class by the source generator.
+/// Indicates that a MValue adapter should be generated for the associated class by the source generator.
 /// </summary>
 [System.AttributeUsage(System.AttributeTargets.Class, Inherited = false)]
-public sealed class {MValueConverterAttributeName} : System.Attribute {{ }}
+public sealed class {MValueAdapterAttributeName} : System.Attribute {{ }}
 
 /// <summary>
 /// Specifies that the associated property or field should be excluded from serialization and deserialization.
