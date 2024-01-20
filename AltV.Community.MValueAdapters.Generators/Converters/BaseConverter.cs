@@ -10,7 +10,6 @@ internal abstract class BaseConverter : ITypeConverter
     protected abstract void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo);
     protected abstract void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo);
 
-
     public void WriteItem(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
     {
         if (propertyInfo.Nullable)

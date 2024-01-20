@@ -246,17 +246,24 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             {
                 if (!_typeConverters.TryGetValue(propertyInfo.TypeName, out var converter))
                 {
-                    var diagnostic = Diagnostic.Create(
-                        "MVC0001",
-                        "Source Generator",
-                        $"Unsupported type {propertyInfo.TypeName} at property {propertyInfo.Name}",
-                        DiagnosticSeverity.Error,
-                        DiagnosticSeverity.Error,
-                        true,
-                        0
-                    );
-                    context.ReportDiagnostic(diagnostic);
-                    continue;
+                    if (classes.Any(x => x is not null && x.Name == propertyInfo.TypeName))
+                    {
+                        converter = new ByAdapterConverter(propertyInfo.TypeName);
+                    }
+                    else
+                    {
+                        var diagnostic = Diagnostic.Create(
+                            "MVC0001",
+                            "Source Generator",
+                            $"Unsupported type {propertyInfo.TypeName} at property {propertyInfo.Name}",
+                            DiagnosticSeverity.Error,
+                            DiagnosticSeverity.Error,
+                            true,
+                            0
+                        );
+                        context.ReportDiagnostic(diagnostic);
+                        continue;
+                    }
                 }
 
                 if (propertyInfo.PropertyType == PropertyType.Default)
