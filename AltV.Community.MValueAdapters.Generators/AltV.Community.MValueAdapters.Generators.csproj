@@ -7,6 +7,16 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <Nullable>enable</Nullable>
+        <PackageId>AltV.Community.MValueAdapters.Generators</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>deluvas1911,duydang2311</Authors>
+        <Product>Generators</Product>
+        <PackageTags>altv,gtav,gta5,roslyn-generator</PackageTags>
+        <Description>A roslyn source generator for MValue adapter implementation in alt:V</Description>
+        <PackageProjectUrl>https://github.com/duydang2311/AltV.Community.MValueAdapters.Generators</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/duydang2311/AltV.Community.MValueAdapters.Generators</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
