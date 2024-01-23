@@ -6,10 +6,16 @@
 
 ### Installation
 
-Add the NuGet package to your project.
+1. Add the NuGet package to your project.
 
 ```bash
 dotnet add package AltV.Community.MValueAdapters.Generators
+```
+
+2. In case there are [CS0436](https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0436) warnings during compilation, you must add these attributes to your `<PackageReference>`.
+
+```xml
+<PackageReference Include="AltV.Community.MValueAdapters.Generators" PrivateAssets="all" ExcludeAssets="runtime" />
 ```
 
 ### Generate your first MValue adapter
