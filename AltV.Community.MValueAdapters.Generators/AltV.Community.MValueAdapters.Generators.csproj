@@ -8,7 +8,7 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <Nullable>enable</Nullable>
         <PackageId>AltV.Community.MValueAdapters.Generators</PackageId>
-        <Version>0.1.8</Version>
+        <Version>0.1.9</Version>
         <Authors>deluvas1911,duydang2311</Authors>
         <Product>Generators</Product>
         <PackageTags>altv,gtav,gta5,roslyn-generator</PackageTags>
@@ -22,7 +22,7 @@
     <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
         <None Include="$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="analyzers\dotnet\cs" Visible="false" />
-        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
+        <None Include="$(OutputPath)\$(AssemblyName).Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
     </ItemGroup>
 
     <ItemGroup>
