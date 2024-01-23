@@ -72,5 +72,6 @@ public static class AltExtensions
 }}
 ";
 
-    internal const string AdapterTemplate = "\t\tAltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(new {0}Adapter());";
+    internal const string AdapterTemplate = @"AltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(new {0}Adapter());		
+AltV.Net.Shared.AltShared.Core.LogInfo($""Registered MValueAdapter: {0}"");";
 }
