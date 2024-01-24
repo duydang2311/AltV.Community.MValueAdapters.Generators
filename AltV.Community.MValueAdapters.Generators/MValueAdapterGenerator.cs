@@ -50,6 +50,16 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             { "Vector2", new Vector2Converter() },
             { "Vector3", new Vector3Converter() },
             { "Quaternion", new QuaternionConverter() },
+            // AltV.Net.Data
+            { "Position", new PositionConverter() },
+            { "Rotation", new RotationConverter() },
+            { "Rgba", new RgbaConverter() },
+            { "Cloth", new ClothConverter() },
+            { "DlcCloth", new DlcClothConverter() },
+            { "Prop", new PropConverter() },
+            { "DlcProp", new DlcPropConverter() },
+            { "HeadBlendData", new HeadBlendDataConverter() },
+            { "HeadOverlay", new HeadOverlayConverter() },
         };
     }
 
