@@ -7,16 +7,16 @@ namespace AltV.Community.MValueAdapters.Generators.Converters;
 internal class Vector3Converter : BaseConverter
 {
     public override string[] AdditionalUsings() => ["System.Numerics"];
-    
+
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("X", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)value.X);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.X);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Y", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)value.Y);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Y);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Z", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)value.Z);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Z);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
