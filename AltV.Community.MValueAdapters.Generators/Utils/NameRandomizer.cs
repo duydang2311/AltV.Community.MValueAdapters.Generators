@@ -8,13 +8,12 @@ public static class NameRandomizer
     public static string Get()
     {
         string guid;
-        
+
         do guid = Guid.NewGuid().ToString().Replace("-", "");
-        while (char.IsDigit(guid[0]) || _usedNames.Contains(guid));
+        while (_usedNames.Contains(guid));
 
         _usedNames.Add(guid);
-        
-        return guid;
+        return '_' + guid;
     }
 
     public static string[] Get(int count)
@@ -24,5 +23,5 @@ public static class NameRandomizer
         return propertyNames;
     }
 
-    private static HashSet<string> _usedNames = [];
+    private static readonly HashSet<string> _usedNames = [];
 }
