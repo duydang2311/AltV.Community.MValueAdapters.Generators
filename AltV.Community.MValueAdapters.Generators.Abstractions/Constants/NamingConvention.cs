@@ -1,6 +1,6 @@
-﻿namespace AltV.Community.MValueAdapters.Generators.Models;
+﻿namespace AltV.Community.MValueAdapters.Generators.Abstractions;
 
-internal enum NamingConvention
+public enum NamingConvention
 {
     UsePropertyName = 0,
     UpperCase = 1,
