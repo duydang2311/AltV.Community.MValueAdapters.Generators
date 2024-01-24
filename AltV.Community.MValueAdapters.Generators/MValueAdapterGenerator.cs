@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using AltV.Community.MValueAdapters.Generators.Abstractions;
 using AltV.Community.MValueAdapters.Generators.Constants;
 using AltV.Community.MValueAdapters.Generators.Converters;
 using AltV.Community.MValueAdapters.Generators.Models;
@@ -15,7 +16,6 @@ namespace AltV.Community.MValueAdapters.Generators;
 [Generator]
 public class MValueAdapterGenerator : IIncrementalGenerator
 {
-    private NamingConvention _namingConvention = NamingConvention.UsePropertyName;
     private readonly Dictionary<string, ITypeConverter> _typeConverters;
 
     public MValueAdapterGenerator()
@@ -60,8 +60,18 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             .Where(c => c != null);
 
         var compilationModel = context.CompilationProvider.Combine(mValues.Collect());
-        context.RegisterSourceOutput(compilationModel, (sourceContext, source) => Execute(source.Right, sourceContext));
+        context.RegisterSourceOutput(compilationModel, (sourceContext, source) =>
+        {
+            foreach (var diagnostic in diagnostics)
+            {
+                sourceContext.ReportDiagnostic(diagnostic);
+            }
+            Execute(source.Right, sourceContext);
+        });
     }
+
+    private List<Diagnostic> diagnostics = [];
+    private int inc = 0;
 
     private MValueClassInfo? GetMValueClasses(GeneratorSyntaxContext context)
     {
@@ -76,11 +86,26 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 var fqName = attributeSymbol.ContainingType.ToString();
                 if (!fqName.Equals("AltV.Community.MValueAdapters.Generators.MValueAdapterAttribute", StringComparison.Ordinal)) continue;
 
-                return new(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax));
+                return new(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax, GetClassNamingConvention(context.SemanticModel, attributeSyntax)));
             }
         }
 
         return null;
+    }
+
+    private NamingConvention GetClassNamingConvention(SemanticModel semanticModel, AttributeSyntax? attributeSyntax)
+    {
+        if (attributeSyntax?.ArgumentList is null) return NamingConvention.UsePropertyName;
+
+        var attributeArgumentSyntax = attributeSyntax.ArgumentList.Arguments
+            .FirstOrDefault(x => x.NameEquals is not null && x.Expression is not null && x.NameEquals.Name.Identifier.ValueText.Equals(nameof(NamingConvention), StringComparison.Ordinal));
+        if (attributeArgumentSyntax is null) return NamingConvention.UsePropertyName;
+
+        var operation = semanticModel.GetOperation(attributeArgumentSyntax.Expression);
+        if (operation is null) return NamingConvention.UsePropertyName;
+
+        if (!operation.ConstantValue.HasValue) return NamingConvention.UsePropertyName;
+        return (NamingConvention)operation.ConstantValue.Value!;
     }
 
     private string GetNamespace(BaseTypeDeclarationSyntax syntax)
@@ -108,7 +133,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         return @namespace;
     }
 
-    private MValuePropertyInfo[] GetClassProperties(SemanticModel semanticModel, ClassDeclarationSyntax classDeclarationSyntax)
+    private MValuePropertyInfo[] GetClassProperties(SemanticModel semanticModel, ClassDeclarationSyntax classDeclarationSyntax, NamingConvention namingConvention)
     {
         var handledProperties = new List<MValuePropertyInfo>();
         var classProperties = classDeclarationSyntax.Members.OfType<PropertyDeclarationSyntax>();
@@ -146,8 +171,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
             if (skipProperty) continue;
 
-            if (customName == null && _namingConvention != NamingConvention.UsePropertyName)
-                customName = GetPropertyName(propertyDeclarationSyntax.Identifier.ValueText);
+            if (customName == null && namingConvention != NamingConvention.UsePropertyName)
+                customName = GetPropertyName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
 
             var propertyData = GetPropertyData(propertyDeclarationSyntax.Type.ToString());
             handledProperties.Add(new MValuePropertyInfo(propertyData, propertyDeclarationSyntax.Identifier.ValueText, customName));
@@ -156,9 +181,9 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         return handledProperties.ToArray();
     }
 
-    private string GetPropertyName(string name)
+    private string GetPropertyName(string name, NamingConvention namingConvention)
     {
-        return _namingConvention switch
+        return namingConvention switch
         {
             NamingConvention.UsePropertyName => name,
             NamingConvention.UpperCase => name.ToUpper(),
