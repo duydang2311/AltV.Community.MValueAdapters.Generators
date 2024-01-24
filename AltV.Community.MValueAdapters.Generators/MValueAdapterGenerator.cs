@@ -286,7 +286,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 SourceText.From(
                     string.Format(
                         Templates.ConverterTemplate,
-                        string.Join("\n", additionalUsings.Select(ns => $"using {ns};")),
+                        string.Join("\n", additionalUsings.Distinct().Select(ns => $"using {ns};")),
                         classInfo.Name,
                         readerCode,
                         writerCode
