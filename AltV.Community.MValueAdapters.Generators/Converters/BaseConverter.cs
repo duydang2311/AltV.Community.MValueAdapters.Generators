@@ -1,10 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using AltV.Community.MValueAdapters.Generators.Models;
 
 namespace AltV.Community.MValueAdapters.Generators.Converters;
 
 internal abstract class BaseConverter : ITypeConverter
 {
+    public virtual string[] AdditionalUsings() => Array.Empty<string>();
     protected abstract void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
     protected abstract void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
     protected abstract void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);

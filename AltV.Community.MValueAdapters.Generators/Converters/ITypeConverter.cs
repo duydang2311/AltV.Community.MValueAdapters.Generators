@@ -5,6 +5,7 @@ namespace AltV.Community.MValueAdapters.Generators.Converters;
 
 internal interface ITypeConverter
 {
+    public abstract string[] AdditionalUsings();
     public abstract void WriteItem(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
     public abstract void ReadItem(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
     public void WriteCollection(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);

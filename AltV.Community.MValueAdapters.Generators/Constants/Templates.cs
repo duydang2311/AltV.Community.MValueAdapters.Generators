@@ -12,7 +12,7 @@ namespace AltV.Community.MValueAdapters.Generators;
 using AltV.Net;
 using AltV.Net.Elements.Args;
 using AltV.Net.Shared;
-using {0};
+{0}
 
 public sealed class {1}Adapter : IMValueAdapter<{1}>
 {{

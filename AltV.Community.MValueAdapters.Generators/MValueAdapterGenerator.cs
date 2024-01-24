@@ -20,7 +20,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
     public MValueAdapterGenerator()
     {
-        _typeConverters = new Dictionary<string, ITypeConverter>()
+        _typeConverters = new Dictionary<string, ITypeConverter>
         {
             // Bool
             { "bool", new BoolConverter() },
@@ -45,7 +45,11 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             // Char
             { "char", new CharConverter() },
             // String
-            { "string", new StringConverter() }
+            { "string", new StringConverter() },
+            // Numerics
+            { "Vector2", new Vector2Converter() },
+            { "Vector3", new Vector3Converter() },
+            { "Quaternion", new QuaternionConverter() },
         };
     }
 
@@ -236,6 +240,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             var readerCode = new StringBuilder();
             var writerIndentation = 2;
             var writerCode = new StringBuilder();
+            var additionalUsings = new List<string> { classInfo.Namespace };
 
             foreach (var propertyInfo in classInfo.PropertyInfos)
             {
@@ -261,6 +266,9 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     }
                 }
 
+                if (converter.AdditionalUsings().Length != 0)
+                    additionalUsings.AddRange(converter.AdditionalUsings());
+
                 if (propertyInfo.PropertyType == PropertyType.Default)
                 {
                     converter.ReadItem(readerCode, ref readerIndentation, classInfo, propertyInfo);
@@ -278,7 +286,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 SourceText.From(
                     string.Format(
                         Templates.ConverterTemplate,
-                        classInfo.Namespace,
+                        string.Join("\n", additionalUsings.Select(ns => $"using {ns};")),
                         classInfo.Name,
                         readerCode,
                         writerCode
