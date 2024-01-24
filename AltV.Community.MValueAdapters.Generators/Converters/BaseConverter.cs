@@ -5,12 +5,12 @@ namespace AltV.Community.MValueAdapters.Generators.Converters;
 
 internal abstract class BaseConverter : ITypeConverter
 {
-    protected abstract void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo);
-    protected abstract void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo);
-    protected abstract void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo);
-    protected abstract void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo);
+    protected abstract void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
+    protected abstract void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
+    protected abstract void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
+    protected abstract void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo);
 
-    public void WriteItem(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    public void WriteItem(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         if (propertyInfo.Nullable)
         {
@@ -19,7 +19,7 @@ internal abstract class BaseConverter : ITypeConverter
         }
 
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{propertyInfo.CustomName ?? propertyInfo.Name}\");");
-        GenerateItemWriteCode(stringBuilder, ref indentation, propertyInfo);
+        GenerateItemWriteCode(stringBuilder, ref indentation, classInfo, propertyInfo);
 
         if (propertyInfo.Nullable)
         {
@@ -27,18 +27,18 @@ internal abstract class BaseConverter : ITypeConverter
         }
     }
 
-    public void ReadItem(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    public void ReadItem(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation++, $"case \"{propertyInfo.CustomName ?? propertyInfo.Name}\":");
-        GenerateItemReadCode(stringBuilder, ref indentation, propertyInfo);
+        GenerateItemReadCode(stringBuilder, ref indentation, classInfo, propertyInfo);
         stringBuilder.AppendLine(indentation--, "continue;");
     }
 
-    public void WriteCollection(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    public void WriteCollection(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         if (propertyInfo.PropertyType == PropertyType.Default)
         {
-            WriteItem(stringBuilder, ref indentation, propertyInfo);
+            WriteItem(stringBuilder, ref indentation, classInfo, propertyInfo);
             return;
         }
 
@@ -59,7 +59,7 @@ internal abstract class BaseConverter : ITypeConverter
             stringBuilder.AppendLine(indentation++, "{");
         }
 
-        GenerateCollectionWriteCode(stringBuilder, ref indentation, propertyInfo);
+        GenerateCollectionWriteCode(stringBuilder, ref indentation, classInfo, propertyInfo);
 
         if (propertyInfo.NullableCollection)
         {
@@ -75,11 +75,11 @@ internal abstract class BaseConverter : ITypeConverter
         }
     }
 
-    public void ReadCollection(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    public void ReadCollection(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         if (propertyInfo.PropertyType == PropertyType.Default)
         {
-            WriteItem(stringBuilder, ref indentation, propertyInfo);
+            WriteItem(stringBuilder, ref indentation, classInfo, propertyInfo);
             return;
         }
 
@@ -88,7 +88,7 @@ internal abstract class BaseConverter : ITypeConverter
         stringBuilder.AppendLine(indentation, "reader.BeginArray();");
         stringBuilder.AppendLine(indentation, "while (reader.HasNext())");
         stringBuilder.AppendLine(indentation++, "{");
-        GenerateCollectionReadCode(stringBuilder, ref indentation, propertyInfo);
+        GenerateCollectionReadCode(stringBuilder, ref indentation, classInfo, propertyInfo);
         stringBuilder.AppendLine(--indentation, "}");
         stringBuilder.AppendLine(indentation, "reader.EndArray();");
 

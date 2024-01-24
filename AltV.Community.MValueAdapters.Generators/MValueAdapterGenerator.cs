@@ -76,7 +76,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 var fqName = attributeSymbol.ContainingType.ToString();
                 if (!fqName.Equals("AltV.Community.MValueAdapters.Generators.MValueAdapterAttribute", StringComparison.Ordinal)) continue;
 
-                return new(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax, GetClassNamingConvention(context.SemanticModel, attributeSyntax)));
+                var namingConvention = GetClassNamingConvention(context.SemanticModel, attributeSyntax);
+                return new MValueClassInfo(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax, namingConvention), namingConvention);
             }
         }
 
@@ -162,26 +163,13 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             if (skipProperty) continue;
 
             if (customName == null && namingConvention != NamingConvention.UsePropertyName)
-                customName = GetPropertyName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
+                customName = NamingConventionHelpers.GetName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
 
             var propertyData = GetPropertyData(propertyDeclarationSyntax.Type.ToString());
             handledProperties.Add(new MValuePropertyInfo(propertyData, propertyDeclarationSyntax.Identifier.ValueText, customName));
         }
 
         return handledProperties.ToArray();
-    }
-
-    private string GetPropertyName(string name, NamingConvention namingConvention)
-    {
-        return namingConvention switch
-        {
-            NamingConvention.UsePropertyName => name,
-            NamingConvention.UpperCase => name.ToUpper(),
-            NamingConvention.LowerCase => name.ToLower(),
-            NamingConvention.PascalCase => NamingConventionHelpers.ToPascalCase(name),
-            NamingConvention.CamelCase => NamingConventionHelpers.ToCamelCase(name),
-            _ => throw new InvalidOperationException("Used naming convention is not valid")
-        };
     }
 
     private PropertyData GetPropertyData(string type)
@@ -275,13 +263,13 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
                 if (propertyInfo.PropertyType == PropertyType.Default)
                 {
-                    converter.ReadItem(readerCode, ref readerIndentation, propertyInfo);
-                    converter.WriteItem(writerCode, ref writerIndentation, propertyInfo);
+                    converter.ReadItem(readerCode, ref readerIndentation, classInfo, propertyInfo);
+                    converter.WriteItem(writerCode, ref writerIndentation, classInfo, propertyInfo);
                 }
                 else
                 {
-                    converter.ReadCollection(readerCode, ref readerIndentation, propertyInfo);
-                    converter.WriteCollection(writerCode, ref writerIndentation, propertyInfo);
+                    converter.ReadCollection(readerCode, ref readerIndentation, classInfo, propertyInfo);
+                    converter.WriteCollection(writerCode, ref writerIndentation, classInfo, propertyInfo);
                 }
             }
 

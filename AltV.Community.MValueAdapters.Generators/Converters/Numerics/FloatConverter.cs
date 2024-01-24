@@ -5,22 +5,22 @@ namespace AltV.Community.MValueAdapters.Generators.Converters;
 
 internal class FloatConverter : BaseConverter
 {
-    protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name});");
     }
 
-    protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (float)reader.NextDouble();");
     }
 
-    protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, "writer.Value((double)item);");
     }
 
-    protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValuePropertyInfo propertyInfo)
+    protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((float)reader.NextDouble());");
     }
