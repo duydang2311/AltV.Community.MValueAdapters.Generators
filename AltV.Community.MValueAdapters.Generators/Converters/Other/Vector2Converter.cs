@@ -8,14 +8,14 @@ namespace AltV.Community.MValueAdapters.Generators.Converters;
 internal class Vector2Converter : BaseConverter
 {
     public override string[] AdditionalUsings() => ["System.Numerics"];
-    
+
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("X", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)value.X);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.X);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Y", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)value.Y);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Y);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
