@@ -1,9 +1,24 @@
+using System;
 using System.Text;
+using AltV.Community.MValueAdapters.Generators.Abstractions;
 
 namespace AltV.Community.MValueAdapters.Generators.Models;
 
 internal class NamingConventionHelpers
 {
+    public static string GetName(string source, NamingConvention namingConvention)
+    {
+        return namingConvention switch
+        {
+            NamingConvention.UsePropertyName => source,
+            NamingConvention.UpperCase => source.ToUpper(),
+            NamingConvention.LowerCase => source.ToLower(),
+            NamingConvention.PascalCase => ToPascalCase(source),
+            NamingConvention.CamelCase => ToCamelCase(source),
+            _ => throw new InvalidOperationException("Used naming convention is not valid")
+        };
+    }
+    
     public static string ToUpper(string name)
     {
         return name.ToUpper();
