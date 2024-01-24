@@ -60,18 +60,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             .Where(c => c != null);
 
         var compilationModel = context.CompilationProvider.Combine(mValues.Collect());
-        context.RegisterSourceOutput(compilationModel, (sourceContext, source) =>
-        {
-            foreach (var diagnostic in diagnostics)
-            {
-                sourceContext.ReportDiagnostic(diagnostic);
-            }
-            Execute(source.Right, sourceContext);
-        });
+        context.RegisterSourceOutput(compilationModel, (sourceContext, source) => Execute(source.Right, sourceContext));
     }
-
-    private List<Diagnostic> diagnostics = [];
-    private int inc = 0;
 
     private MValueClassInfo? GetMValueClasses(GeneratorSyntaxContext context)
     {
