@@ -8,7 +8,7 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <Nullable>enable</Nullable>
         <PackageId>AltV.Community.MValueAdapters.Generators</PackageId>
-        <Version>0.1.12</Version>
+        <Version>0.1.13</Version>
         <Authors>deluvas1911,duydang2311</Authors>
         <Product>Generators</Product>
         <PackageTags>altv,gtav,gta5,roslyn-generator</PackageTags>
