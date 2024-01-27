@@ -250,17 +250,20 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             var readerCode = new StringBuilder();
             var writerIndentation = 2;
             var writerCode = new StringBuilder();
-            var additionalUsings = new List<string> { classInfo.Namespace };
+            var additionalUsings = new HashSet<string> { classInfo.Namespace };
 
             foreach (var propertyInfo in classInfo.PropertyInfos)
             {
                 if (!_typeConverters.TryGetValue(propertyInfo.TypeName, out var converter))
                 {
-                    if (classes.Any(x => x is not null && x.Name == propertyInfo.TypeName))
+                    foreach (var @class in classes)
                     {
+                        if (@class is null || !@class.Name.Equals(propertyInfo.TypeName, StringComparison.Ordinal)) continue;
                         converter = new ByAdapterConverter(propertyInfo.TypeName);
+                        additionalUsings.Add(@class.Namespace);
+                        break;
                     }
-                    else
+                    if (converter is null)
                     {
                         var diagnostic = Diagnostic.Create(
                             "MVC0001",
@@ -276,8 +279,10 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     }
                 }
 
-                if (converter.AdditionalUsings().Length != 0)
-                    additionalUsings.AddRange(converter.AdditionalUsings());
+                foreach (var @using in converter.AdditionalUsings())
+                {
+                    additionalUsings.Add(@using);
+                }
 
                 if (propertyInfo.PropertyType == PropertyType.Default)
                 {
@@ -296,7 +301,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 SourceText.From(
                     string.Format(
                         Templates.ConverterTemplate,
-                        string.Join("\n", additionalUsings.Distinct().Select(ns => $"using {ns};")),
+                        string.Join("\n", additionalUsings.Select(ns => $"using {ns};")),
                         classInfo.Name,
                         readerCode,
                         writerCode
