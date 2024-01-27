@@ -65,13 +65,28 @@ namespace AltV.Net;
 
 public static class AltExtensions
 {{
-    public static void RegisterAdapters()
+    public static void RegisterAdapters(bool listAdapters = false, bool logAdapters = false)
     {{
 {0}
+        if (listAdapters) {{
+{1}
+        }}
+        if (logAdapters) {{
+{2}
+        }}
     }}
 }}
 ";
 
-    internal const string AdapterTemplate = @"        AltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(new {0}Adapter());		
-        AltV.Net.Shared.AltShared.Core.LogInfo($""Registered MValueAdapter: {0}"");";
+    internal const string AdapterTemplate = """
+            AltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(new {0}Adapter());
+    """;
+
+    internal const string ListAdapterTemplate = """
+                AltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(Elements.Args.DefaultMValueAdapters.GetArrayAdapter(new {0}Adapter()));
+    """;
+
+    internal const string LogAdapterTemplate = """
+                AltV.Net.Shared.AltShared.Core.LogInfo($"Registered MValueAdapter: {0}");
+    """;
 }

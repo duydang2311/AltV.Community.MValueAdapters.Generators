@@ -241,7 +241,9 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
     private void Execute(ImmutableArray<MValueClassInfo?> classes, SourceProductionContext context)
     {
-        var adapterList = new StringBuilder();
+        var adaptersBuilder = new StringBuilder();
+        var listAdaptersBuilder = new StringBuilder();
+        var logAdaptersBuilder = new StringBuilder();
         foreach (var classInfo in classes)
         {
             if (classInfo == null) continue;
@@ -309,9 +311,17 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     Encoding.UTF8
                 )
             );
-            adapterList.AppendLine(string.Format(Templates.AdapterTemplate, classInfo.Name));
+            adaptersBuilder.AppendLine(string.Format(Templates.AdapterTemplate, classInfo.Name));
+            listAdaptersBuilder.AppendLine(string.Format(Templates.ListAdapterTemplate, classInfo.Name));
+            logAdaptersBuilder.AppendLine(string.Format(Templates.LogAdapterTemplate, classInfo.Name));
         }
 
-        context.AddSource("MValueAdapters.Generators.AltExtensions.g.cs", SourceText.From(string.Format(Templates.ExtensionTemplate, adapterList), Encoding.UTF8));
+        context.AddSource(
+            "MValueAdapters.Generators.AltExtensions.g.cs",
+            SourceText.From(string.Format(
+                Templates.ExtensionTemplate,
+                adaptersBuilder.ToString(0, adaptersBuilder.Length - 2),
+                listAdaptersBuilder.ToString(0, listAdaptersBuilder.Length - 2),
+                logAdaptersBuilder.ToString(0, logAdaptersBuilder.Length - 2)), Encoding.UTF8));
     }
 }
