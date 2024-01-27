@@ -20,7 +20,7 @@ internal class ByAdapterConverter(string typeName) : BaseConverter()
     protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         // TODO: improve performance by reuse adapter instance
-        stringBuilder.AppendLine(indentation, $"new {_typeName}Adapter().ToMValue(value.{propertyInfo.Name}, writer);");
+        stringBuilder.AppendLine(indentation, $"new {_typeName}Adapter().ToMValue(item, writer);");
     }
 
     protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
