@@ -320,8 +320,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             "MValueAdapters.Generators.AltExtensions.g.cs",
             SourceText.From(string.Format(
                 Templates.ExtensionTemplate,
-                adaptersBuilder.ToString(0, adaptersBuilder.Length - 2),
-                listAdaptersBuilder.ToString(0, listAdaptersBuilder.Length - 2),
-                logAdaptersBuilder.ToString(0, logAdaptersBuilder.Length - 2)), Encoding.UTF8));
+                adaptersBuilder.ToString(),
+                listAdaptersBuilder.ToString(),
+                logAdaptersBuilder.ToString()), Encoding.UTF8));
     }
 }
