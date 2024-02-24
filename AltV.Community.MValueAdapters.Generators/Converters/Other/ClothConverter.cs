@@ -12,18 +12,17 @@ internal class ClothConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.Drawable);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Drawable);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.Texture);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Texture);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Palette", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.Palette);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Palette);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
     protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         var tmpNames = NameRandomizer.Get(4);
-
         stringBuilder.AppendLine(indentation, $"ushort {tmpNames[0]} = 0;");
         stringBuilder.AppendLine(indentation, $"byte {tmpNames[1]} = 0, {tmpNames[2]} = 0;");
         stringBuilder.AppendLine(indentation, "reader.BeginObject();");
@@ -33,13 +32,13 @@ internal class ClothConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch ({tmpNames[3]})");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Palette", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");
@@ -54,11 +53,11 @@ internal class ClothConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.Drawable);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Drawable);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.Texture);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Texture);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Palette", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.Palette);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Palette);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -75,13 +74,13 @@ internal class ClothConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch ({tmpNames[3]})");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Palette", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");

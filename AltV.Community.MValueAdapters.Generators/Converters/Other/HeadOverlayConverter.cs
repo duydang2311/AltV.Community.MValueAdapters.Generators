@@ -12,15 +12,15 @@ internal class HeadOverlayConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Index", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.Index);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Index);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Opacity", classInfo.NamingConvention)}\");");
         stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Opacity);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("ColorType", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.ColorType);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.ColorType);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("ColorIndex", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.ColorIndex);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.ColorIndex);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("SecondColorIndex", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((uint)value.{propertyInfo.Name}.SecondColorIndex);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.SecondColorIndex);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -36,19 +36,19 @@ internal class HeadOverlayConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch (reader.NextName())");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Index", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Opacity", classInfo.NamingConvention)}\":");
         stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (float)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("ColorType", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("ColorIndex", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("SecondColorIndex", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[4]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[4]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");
@@ -63,15 +63,15 @@ internal class HeadOverlayConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Index", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.Index);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Index);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Opacity", classInfo.NamingConvention)}\");");
         stringBuilder.AppendLine(indentation, "writer.Value((float)item.Opacity);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("ColorType", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.ColorType);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.ColorType);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("ColorIndex", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.ColorIndex);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.ColorIndex);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("SecondColorIndex", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((uint)item.SecondColorIndex);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.SecondColorIndex);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -87,19 +87,19 @@ internal class HeadOverlayConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch (reader.NextName())");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Index", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Opacity", classInfo.NamingConvention)}\":");
         stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (float)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("ColorType", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("ColorIndex", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("SecondColorIndex", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[4]} = (byte)reader.NextUInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[4]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");

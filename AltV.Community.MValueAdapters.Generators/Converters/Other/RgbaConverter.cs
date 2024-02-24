@@ -12,13 +12,13 @@ internal class RgbaConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("R", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((int)value.{propertyInfo.Name}.R);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.R);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("G", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((int)value.{propertyInfo.Name}.G);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.G);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("B", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((int)value.{propertyInfo.Name}.B);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.B);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("A", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((int)value.{propertyInfo.Name}.A);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.A);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -34,16 +34,16 @@ internal class RgbaConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch ({tmpNames[4]})");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("R", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("G", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("B", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("A", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");
@@ -58,13 +58,13 @@ internal class RgbaConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("R", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((int)item.R);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.R);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("G", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((int)item.G);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.G);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("B", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((int)item.B);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.B);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("A", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((int)item.A);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item.A);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -80,16 +80,16 @@ internal class RgbaConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch ({tmpNames[4]})");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("R", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("G", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("B", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("A", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextInt();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[3]} = (byte)reader.NextLong();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");
