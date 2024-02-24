@@ -7,21 +7,21 @@ internal class ULongConverter : BaseConverter
 {
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"writer.Value((ulong)value.{propertyInfo.Name});");
+        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name});");
     }
 
     protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (ulong)reader.NextULong();");
+        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (ulong)reader.NextLong();");
     }
 
     protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, "writer.Value((ulong)item);");
+        stringBuilder.AppendLine(indentation, "writer.Value((long)item);");
     }
 
     protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((ulong)reader.NextULong());");
+        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((ulong)reader.NextLong());");
     }
 }
