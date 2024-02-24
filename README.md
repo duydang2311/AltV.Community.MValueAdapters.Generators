@@ -18,6 +18,8 @@ dotnet add package AltV.Community.MValueAdapters.Generators
 <PackageReference Include="AltV.Community.MValueAdapters.Generators" PrivateAssets="all" ExcludeAssets="runtime" />
 ```
 
+**Note:** If you use a _shared_ project between client and server, only add the NuGet to the _shared_ project and neither to the client nor server project to avoid ambigious references.
+
 ### Generate your first MValue adapter
 
 1. Add `MValueAdapter` attribute to your class.
@@ -41,7 +43,7 @@ public class ChildDto
 }
 ```
 
-2. Register the MValue adapters generated when the resource start.
+2. Register the MValue adapters generated when the resource (client / server) starts.
 
 ```csharp
 public override void OnStart()
