@@ -13,9 +13,9 @@ internal class Vector2Converter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("X", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.X);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.X);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Y", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Y);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Y);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -49,9 +49,9 @@ internal class Vector2Converter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("X", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.X);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.X);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Y", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.Y);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Y);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 

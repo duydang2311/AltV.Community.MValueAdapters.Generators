@@ -7,21 +7,21 @@ internal class SByteConverter : BaseConverter
 {
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name});");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name});");
     }
 
     protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (sbyte)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (sbyte)reader.NextDouble();");
     }
 
     protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, "writer.Value((long)item);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item);");
     }
 
     protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((sbyte)reader.NextLong());");
+        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((sbyte)reader.NextDouble());");
     }
 }

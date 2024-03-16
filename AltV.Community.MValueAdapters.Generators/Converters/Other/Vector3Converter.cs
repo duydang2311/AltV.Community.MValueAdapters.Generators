@@ -12,11 +12,11 @@ internal class Vector3Converter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("X", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.X);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.X);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Y", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Y);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Y);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Z", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Z);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Z);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -53,11 +53,11 @@ internal class Vector3Converter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("X", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.X);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.X);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Y", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.Y);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Y);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Z", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.Z);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Z);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 

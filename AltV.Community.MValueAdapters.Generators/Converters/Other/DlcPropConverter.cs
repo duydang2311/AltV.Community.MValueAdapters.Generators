@@ -12,11 +12,11 @@ internal class DlcPropConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Drawable);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Drawable);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Texture);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Texture);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Dlc", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((long)value.{propertyInfo.Name}.Dlc);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Dlc);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -33,13 +33,13 @@ internal class DlcPropConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch (reader.NextName())");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Dlc", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (uint)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (uint)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");
@@ -54,11 +54,11 @@ internal class DlcPropConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Drawable);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Drawable);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Texture);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Texture);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Dlc", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((long)item.Dlc);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Dlc);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -75,13 +75,13 @@ internal class DlcPropConverter : BaseConverter
         stringBuilder.AppendLine(indentation, $"switch (reader.NextName())");
         stringBuilder.AppendLine(indentation++, "{");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Drawable", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[0]} = (ushort)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Texture", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[1]} = (byte)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, $"case \"{NamingConventionHelpers.GetName("Dlc", classInfo.NamingConvention)}\":");
-        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (uint)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"{tmpNames[2]} = (uint)reader.NextDouble();");
         stringBuilder.AppendLine(indentation--, "continue;");
         stringBuilder.AppendLine(indentation++, "default:");
         stringBuilder.AppendLine(indentation, "reader.SkipValue();");

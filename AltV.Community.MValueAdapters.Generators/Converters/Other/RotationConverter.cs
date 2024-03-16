@@ -12,11 +12,11 @@ internal class RotationConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Roll", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Roll);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Roll);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Pitch", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Pitch);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Pitch);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Yaw", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, $"writer.Value((float)value.{propertyInfo.Name}.Yaw);");
+        stringBuilder.AppendLine(indentation, $"writer.Value((double)value.{propertyInfo.Name}.Yaw);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
@@ -53,11 +53,11 @@ internal class RotationConverter : BaseConverter
     {
         stringBuilder.AppendLine(indentation, "writer.BeginObject();");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Roll", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.Roll);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Roll);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Pitch", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.Pitch);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Pitch);");
         stringBuilder.AppendLine(indentation, $"writer.Name(\"{NamingConventionHelpers.GetName("Yaw", classInfo.NamingConvention)}\");");
-        stringBuilder.AppendLine(indentation, "writer.Value((float)item.Yaw);");
+        stringBuilder.AppendLine(indentation, "writer.Value((double)item.Yaw);");
         stringBuilder.AppendLine(indentation, "writer.EndObject();");
     }
 
