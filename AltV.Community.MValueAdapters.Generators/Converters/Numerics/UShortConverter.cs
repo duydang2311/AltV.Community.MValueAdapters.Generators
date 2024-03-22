@@ -12,7 +12,7 @@ internal class UShortConverter : BaseConverter
 
     protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (ushort)reader.NextLong();");
+        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = (ushort)reader.NextDouble();");
     }
 
     protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
@@ -22,6 +22,6 @@ internal class UShortConverter : BaseConverter
 
     protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((ushort)reader.NextLong());");
+        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add((ushort)reader.NextDouble());");
     }
 }
