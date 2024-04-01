@@ -5,6 +5,8 @@ namespace AltV.Community.MValueAdapters.Generators.Converters;
 
 internal class DateTimeConverter : BaseConverter
 {
+    public override string[] AdditionalUsings() => ["System"];
+
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, $"writer.Value(new DateTimeOffset((DateTime)value.{propertyInfo.Name}).ToUnixTimeMilliseconds());");
