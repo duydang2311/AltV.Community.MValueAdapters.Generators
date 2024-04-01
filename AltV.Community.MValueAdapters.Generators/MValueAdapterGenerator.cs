@@ -46,6 +46,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             { "char", new CharConverter() },
             // String
             { "string", new StringConverter() },
+            // Guid
+            { "Guid", new GuidConverter() },
             // Numerics
             { "Vector2", new Vector2Converter() },
             { "Vector3", new Vector3Converter() },
