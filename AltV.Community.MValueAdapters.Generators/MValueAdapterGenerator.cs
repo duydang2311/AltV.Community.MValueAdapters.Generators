@@ -52,6 +52,9 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             { "Vector2", new Vector2Converter() },
             { "Vector3", new Vector3Converter() },
             { "Quaternion", new QuaternionConverter() },
+            // DateTime
+            { "DateTime", new DateTimeConverter() },
+            { "DateTimeOffset", new DateTimeOffsetConverter() },
             // AltV.Net.Data
             { "Position", new PositionConverter() },
             { "Rotation", new RotationConverter() },
