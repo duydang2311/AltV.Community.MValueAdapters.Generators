@@ -1,11 +1,12 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using AltV.Community.MValueAdapters.Generators.Models;
 
 namespace AltV.Community.MValueAdapters.Generators.Converters;
 
 internal class GuidConverter : BaseConverter
 {
+    public override string[] AdditionalUsings() => ["System"];
+
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
         stringBuilder.AppendLine(indentation, $"writer.Value(value.{propertyInfo.Name}.ToString());");
