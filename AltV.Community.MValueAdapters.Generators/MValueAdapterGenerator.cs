@@ -162,10 +162,10 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                     var fqName = attributeSymbol.ContainingType.ToString();
                     switch (fqName)
                     {
-                        case "AltV.Community.MValueAdapters.Generators.MValueIgnoreAttribute":
+                        case var _ when fqName == typeof(MValueIgnoreAttributeName).FullName:
                             skipProperty = true;
                             break;
-                        case "AltV.Community.MValueAdapters.Generators.MValuePropertyNameAttribute":
+                        case var _ when fqName == typeof(MValuePropertyNameAttribute).FullName:
                             customName = attributeSyntax.ArgumentList!.Arguments[0].ToString();
                             break;
                     }
