@@ -9,21 +9,21 @@ internal class GuidConverter : BaseConverter
 
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"writer.Value(value.{propertyInfo.Name}.ToString());");
+        stringBuilder.AppendLine(indentation, $"writer.Value(value.{propertyInfo.Name}.ToString(\"D\"));");
     }
 
     protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = Guid.Parse(reader.NextString());");
+        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = Guid.ParseExact(reader.NextString(), \"D\");");
     }
 
     protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, "writer.Value(item.ToString());");
+        stringBuilder.AppendLine(indentation, "writer.Value(item.ToString(\"D\"));");
     }
 
     protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add(Guid.Parse(reader.NextString()));");
+        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add(Guid.ParseExact(reader.NextString(), \"D\"));");
     }
 }
