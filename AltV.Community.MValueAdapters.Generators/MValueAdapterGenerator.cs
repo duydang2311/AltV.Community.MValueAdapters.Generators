@@ -8,6 +8,7 @@ using AltV.Community.MValueAdapters.Generators.Constants;
 using AltV.Community.MValueAdapters.Generators.Converters;
 using AltV.Community.MValueAdapters.Generators.Models;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -184,15 +185,16 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             if (customName == null && namingConvention != NamingConvention.UsePropertyName)
                 customName = NamingConventionHelpers.GetName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
 
-            var propertyData = GetPropertyData(propertyDeclarationSyntax.Type.ToString());
+            var propertyData = GetPropertyData(semanticModel, propertyDeclarationSyntax);
             handledProperties.Add(new MValuePropertyInfo(propertyData, propertyDeclarationSyntax.Identifier.ValueText, customName));
         }
 
         return handledProperties.ToArray();
     }
 
-    private PropertyData GetPropertyData(string type)
+    private PropertyData GetPropertyData(SemanticModel semanticModel, PropertyDeclarationSyntax propertyDeclarationSyntax)
     {
+        var type = propertyDeclarationSyntax.Type.ToString();
         var propertyType = PropertyType.Default;
 
         // Nullable BaseType
@@ -218,6 +220,15 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         {
             propertyType = PropertyType.Array;
             type = type.Substring(12, type.Length - 13);
+        }
+        else if (propertyDeclarationSyntax.Type is IdentifierNameSyntax identifierNameSyntax)
+        {
+            var typeInfo = semanticModel.GetTypeInfo(identifierNameSyntax);
+            if (typeInfo.Type is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.TypeKind == TypeKind.Enum)
+            {
+                propertyType = PropertyType.Enum;
+                type = namedTypeSymbol.EnumUnderlyingType!.ToString();
+            }
         }
 
         if (propertyType == PropertyType.Default) return new PropertyData(propertyType, type, nullable);

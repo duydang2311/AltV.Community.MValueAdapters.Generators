@@ -4,5 +4,6 @@ internal enum PropertyType
 {
     Default,
     Array,
-    List
+    List,
+    Enum
 }
