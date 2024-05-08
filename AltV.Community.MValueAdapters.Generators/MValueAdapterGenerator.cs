@@ -46,6 +46,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             { "char", new CharConverter() },
             // String
             { "string", new StringConverter() },
+			// Enum
+			{ "enum", new EnumConverter() },
             // Guid
             { "Guid", new GuidConverter() },
             // Numerics
@@ -151,11 +153,18 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         // ReSharper disable once TooWideLocalVariableScope
         bool skipProperty;
         string? customName;
-
+		string? underlyingEnumTypeName;
         foreach (var propertyDeclarationSyntax in classProperties)
         {
             skipProperty = false;
             customName = null;
+			underlyingEnumTypeName = null;
+
+			// Check if the property is an enum and retrieve underlying type
+			if (semanticModel.GetTypeInfo(propertyDeclarationSyntax.Type).Type is INamedTypeSymbol namedTypeSymbol &&
+				namedTypeSymbol.TypeKind == TypeKind.Enum)
+				underlyingEnumTypeName = namedTypeSymbol.EnumUnderlyingType!.ToString();
+				
 
             foreach (var attributeListSyntax in propertyDeclarationSyntax.AttributeLists)
             {
@@ -185,7 +194,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 customName = NamingConventionHelpers.GetName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
 
             var propertyData = GetPropertyData(propertyDeclarationSyntax.Type.ToString());
-            handledProperties.Add(new MValuePropertyInfo(propertyData, propertyDeclarationSyntax.Identifier.ValueText, customName));
+            handledProperties.Add(new MValuePropertyInfo(propertyData, propertyDeclarationSyntax.Identifier.ValueText, customName, underlyingEnumTypeName));
         }
 
         return handledProperties.ToArray();
@@ -261,12 +270,15 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
             foreach (var propertyInfo in classInfo.PropertyInfos)
             {
-                if (!_typeConverters.TryGetValue(propertyInfo.TypeName, out var converter))
+				// Use underlying type for enums or base type for others
+				string typeName = (propertyInfo.IsEnum ? "enum" : propertyInfo.TypeName)!;
+
+                if (!_typeConverters.TryGetValue(typeName, out var converter))
                 {
                     foreach (var @class in classes)
                     {
-                        if (@class is null || !@class.Name.Equals(propertyInfo.TypeName, StringComparison.Ordinal)) continue;
-                        converter = new ByAdapterConverter(propertyInfo.TypeName);
+                        if (@class is null || !@class.Name.Equals(typeName, StringComparison.Ordinal)) continue;
+                        converter = new ByAdapterConverter(typeName);
                         additionalUsings.Add(@class.Namespace);
                         break;
                     }
@@ -275,7 +287,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                         var diagnostic = Diagnostic.Create(
                             "MVC0001",
                             "Source Generator",
-                            $"Unsupported type {propertyInfo.TypeName} at property {propertyInfo.Name}",
+                            $"Unsupported type {propertyInfo.TypeName} at property {propertyInfo.Name} - Enum: {propertyInfo.IsEnum}",
                             DiagnosticSeverity.Error,
                             DiagnosticSeverity.Error,
                             true,
