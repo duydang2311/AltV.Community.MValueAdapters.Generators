@@ -53,3 +53,23 @@ public override void OnStart()
 ```
 
 Huge thanks to deluvas1911 for sharing his great work and allowing me to open source this.
+
+## How To Contribute
+
+If you'd like to contribute, some adjustments need to be made to the project setup.
+
+1. Fork the project, clone and build it `dotnet build`.
+2. Remove any existing `<PackageReference>` to this project from your `Server`/`Client` project.
+3. Add the following lines to an `<ItemGroup>` and replace the `Include=` value with the relative paths:
+
+```xml
+<ProjectReference Include="..\AltV.Community.MValueAdapters.Generators\AltV.Community.MValueAdapters.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+<ProjectReference Include="..\AltV.Community.MValueAdapters.Generators.Abstractions\AltV.Community.MValueAdapters.Generators.Abstractions.csproj" OutputItemType="Analyzer" />
+```
+4. Add the following line to an `<ItemGroup>` in your `Server`/`Client` project to view generated files:
+
+```xml
+<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+```
+
+5. In your `Server`/`Client` project, run `dotnet clean` before building, to ensure cache is cleared.
