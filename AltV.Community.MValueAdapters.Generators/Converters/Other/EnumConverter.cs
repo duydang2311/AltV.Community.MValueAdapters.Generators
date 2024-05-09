@@ -7,39 +7,76 @@ internal class EnumConverter : BaseConverter
 {
     protected override void GenerateItemWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"writer.Value(({propertyInfo.UnderlyingEnumTypeName})value.{propertyInfo.Name});");
+        stringBuilder.AppendLine(indentation, $"writer.Value({GetWriterValuePrefix(propertyInfo)}value{GetWriterValueSuffix(propertyInfo)});");
     }
 
     protected override void GenerateItemReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = ({propertyInfo.TypeName})reader.{Next(propertyInfo)}();");
+        stringBuilder.AppendLine(indentation, $"c.{propertyInfo.Name} = ({propertyInfo.TypeName})reader{GetReaderSuffix(propertyInfo)};");
     }
 
     protected override void GenerateCollectionWriteCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"writer.Value(({propertyInfo.UnderlyingEnumTypeName})item);");
+        stringBuilder.AppendLine(indentation, $"writer.Value({GetWriterValuePrefix(propertyInfo)}item{GetWriteCollectionItemSuffix(propertyInfo)});");
     }
 
     protected override void GenerateCollectionReadCode(StringBuilder stringBuilder, ref int indentation, MValueClassInfo classInfo, MValuePropertyInfo propertyInfo)
     {
-        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add(({propertyInfo.TypeName})reader.{Next(propertyInfo)}());");
+        stringBuilder.AppendLine(indentation, $"{propertyInfo.Name}Builder.Add(({propertyInfo.TypeName})reader.{GetReaderSuffix(propertyInfo)});");
     }
 
-	private string Next(MValuePropertyInfo propertyInfo)
+	/// <summary>
+	/// Returns a possible prefix/cast for the ItemWriteCode.
+	/// Basically only performs a "double" or "bool" cast, if
+	/// the underlying type is neither a number nor a bool.
+	/// </summary>
+	/// <param name="propertyInfo"></param>
+	/// <returns></returns>
+	private string GetWriterValuePrefix(MValuePropertyInfo propertyInfo)
 	{
-		if (IsUnderlyingText(propertyInfo)) return "NextString";
-		else if (IsUnderlyingBool(propertyInfo)) return "NextBool";
+		if (propertyInfo.UnderlyingEnumTypeName == "char") return "";
+		else if (propertyInfo.UnderlyingEnumTypeName == "string") return "";
+		else if (propertyInfo.UnderlyingEnumTypeName == "bool") return "(bool)";
 		else
-			return "NextDouble";
+			return "(double)";
 	}
 
-	private bool IsUnderlyingText(MValuePropertyInfo propertyInfo)
+	/// <summary>
+	/// Returns the suffix for the value writer.
+	/// </summary>
+	/// <param name="propertyInfo"></param>
+	/// <returns></returns>
+	private string GetWriterValueSuffix(MValuePropertyInfo propertyInfo)
 	{
-		return propertyInfo.UnderlyingEnumTypeName == "string" || propertyInfo.UnderlyingEnumTypeName == "char";
+		if (propertyInfo.UnderlyingEnumTypeName == "char") return $".{propertyInfo.Name}.ToString()";
+		else
+			return $".{propertyInfo.Name}";
 	}
 
-	private bool IsUnderlyingBool(MValuePropertyInfo propertyInfo)
+	/// <summary>
+	/// Returns the suffix for the write collection code of the item
+	/// </summary>
+	/// <param name="propertyInfo"></param>
+	/// <returns></returns>
+	private string GetWriteCollectionItemSuffix(MValuePropertyInfo propertyInfo)
 	{
-		return propertyInfo.UnderlyingEnumTypeName == "bool";
+		if (propertyInfo.UnderlyingEnumTypeName == "char") return $".ToString()";
+		else
+			return "";
+	}
+
+	/// <summary>
+	/// Returns the string for the reader to target next type.
+	/// For texts (string / char), "FirstOrDefault" is appended.
+	/// </summary>
+	/// <param name="propertyInfo"></param>
+	/// <returns></returns>
+	private string GetReaderSuffix(MValuePropertyInfo propertyInfo)
+	{
+		if (propertyInfo.UnderlyingEnumTypeName == "char") return ".NextString()";
+		else if (propertyInfo.UnderlyingEnumTypeName == "string") return ".NextString().FirstOrDefault()";
+		else if (propertyInfo.UnderlyingEnumTypeName == "bool") return ".NextBool()";
+		else
+			return ".NextDouble()";
 	}
 }
