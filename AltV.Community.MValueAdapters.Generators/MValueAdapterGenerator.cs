@@ -98,7 +98,12 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 if (!fqName.Equals("AltV.Community.MValueAdapters.Generators.MValueAdapterAttribute", StringComparison.Ordinal)) continue;
 
                 var namingConvention = GetClassNamingConvention(context.SemanticModel, attributeSyntax);
-                return new MValueClassInfo(classDeclarationSyntax.Identifier.ValueText, GetNamespace(classDeclarationSyntax), GetClassProperties(context.SemanticModel, classDeclarationSyntax, namingConvention), namingConvention);
+                var propertyInfos = GetClassProperties(context.SemanticModel, classDeclarationSyntax, namingConvention);
+                return new MValueClassInfo(
+                    classDeclarationSyntax.Identifier.ValueText,
+                    GetNamespace(classDeclarationSyntax),
+                    propertyInfos,
+                    namingConvention);
             }
         }
 
@@ -153,18 +158,21 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         // ReSharper disable once TooWideLocalVariableScope
         bool skipProperty;
         string? customName;
-		string? underlyingEnumTypeName;
+        string? underlyingEnumTypeName;
+        string? additionalUsing = null;
         foreach (var propertyDeclarationSyntax in classProperties)
         {
             skipProperty = false;
             customName = null;
-			underlyingEnumTypeName = null;
+            underlyingEnumTypeName = null;
 
-			// Check if the property is an enum and retrieve underlying type
-			if (semanticModel.GetTypeInfo(propertyDeclarationSyntax.Type).Type is INamedTypeSymbol namedTypeSymbol &&
-				namedTypeSymbol.TypeKind == TypeKind.Enum)
-				underlyingEnumTypeName = namedTypeSymbol.EnumUnderlyingType!.ToString();
-				
+            // Check if the property is an enum and retrieve underlying type
+            if (semanticModel.GetTypeInfo(propertyDeclarationSyntax.Type).Type is INamedTypeSymbol namedTypeSymbol
+                && namedTypeSymbol.TypeKind == TypeKind.Enum)
+            {
+                underlyingEnumTypeName = namedTypeSymbol.EnumUnderlyingType!.ToString();
+                additionalUsing = namedTypeSymbol.ContainingNamespace.ToDisplayString();
+            }
 
             foreach (var attributeListSyntax in propertyDeclarationSyntax.AttributeLists)
             {
@@ -194,7 +202,12 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 customName = NamingConventionHelpers.GetName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
 
             var propertyData = GetPropertyData(propertyDeclarationSyntax.Type.ToString());
-            handledProperties.Add(new MValuePropertyInfo(propertyData, propertyDeclarationSyntax.Identifier.ValueText, customName, underlyingEnumTypeName));
+            handledProperties.Add(new MValuePropertyInfo(
+                propertyData,
+                propertyDeclarationSyntax.Identifier.ValueText,
+                customName,
+                underlyingEnumTypeName,
+                additionalUsing));
         }
 
         return handledProperties.ToArray();
@@ -266,12 +279,15 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             var readerCode = new StringBuilder();
             var writerIndentation = 2;
             var writerCode = new StringBuilder();
-            var additionalUsings = new HashSet<string> { classInfo.Namespace };
+            var additionalUsings = new HashSet<string>(classInfo.PropertyInfos
+                .Where(static x => x.AdditionalUsing is not null)
+                .Select(static x => x.AdditionalUsing)
+                .Cast<string>()) { classInfo.Namespace };
 
             foreach (var propertyInfo in classInfo.PropertyInfos)
             {
-				// Use underlying type for enums or base type for others
-				string typeName = (propertyInfo.IsEnum ? "enum" : propertyInfo.TypeName)!;
+                // Use underlying type for enums or base type for others
+                string typeName = (propertyInfo.IsEnum ? "enum" : propertyInfo.TypeName)!;
 
                 if (!_typeConverters.TryGetValue(typeName, out var converter))
                 {
