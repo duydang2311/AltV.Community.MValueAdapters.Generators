@@ -282,7 +282,11 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             var additionalUsings = new HashSet<string>(classInfo.PropertyInfos
                 .Where(static x => x.AdditionalUsing is not null)
                 .Select(static x => x.AdditionalUsing)
-                .Cast<string>()) { classInfo.Namespace };
+                .Cast<string>());
+            if (!string.IsNullOrEmpty(classInfo.Namespace))
+            {
+                additionalUsings.Add(classInfo.Namespace);
+            }
 
             foreach (var propertyInfo in classInfo.PropertyInfos)
             {
