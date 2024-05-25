@@ -188,7 +188,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                             skipProperty = true;
                             break;
                         case var _ when fqName == typeof(MValuePropertyNameAttribute).FullName:
-                            customName = attributeSyntax.ArgumentList!.Arguments[0].ToString();
+                            customName = attributeSyntax.ArgumentList!.Arguments[0].GetFirstToken().ValueText;
                             break;
                     }
                 }
