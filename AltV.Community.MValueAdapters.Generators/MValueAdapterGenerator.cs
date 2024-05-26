@@ -75,7 +75,9 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         var mValues = context
             .SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
+                predicate: (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
+                    or StructDeclarationSyntax { AttributeLists.Count: > 0 }
+                    or RecordDeclarationSyntax { AttributeLists.Count: > 0 },
                 transform: (ctx, _) => GetMValueClasses(ctx)
             )
             .Where(c => c != null);
@@ -86,7 +88,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
     private MValueClassInfo? GetMValueClasses(GeneratorSyntaxContext context)
     {
-        var classDeclarationSyntax = (ClassDeclarationSyntax)context.Node;
+        var classDeclarationSyntax = (TypeDeclarationSyntax)context.Node;
         foreach (var attributeListSyntax in classDeclarationSyntax.AttributeLists)
         {
             foreach (var attributeSyntax in attributeListSyntax.Attributes)
@@ -150,7 +152,7 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         return @namespace;
     }
 
-    private MValuePropertyInfo[] GetClassProperties(SemanticModel semanticModel, ClassDeclarationSyntax classDeclarationSyntax, NamingConvention namingConvention)
+    private MValuePropertyInfo[] GetClassProperties(SemanticModel semanticModel, TypeDeclarationSyntax classDeclarationSyntax, NamingConvention namingConvention)
     {
         var handledProperties = new List<MValuePropertyInfo>();
         var classProperties = classDeclarationSyntax.Members.OfType<PropertyDeclarationSyntax>();
