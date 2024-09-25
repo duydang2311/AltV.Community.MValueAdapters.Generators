@@ -84,9 +84,9 @@ public static class AltExtensions
 }}
 ";
 
-    internal const string AdapterTemplate = "\t\tAltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(new {0}Adapter());";
+    internal const string AdapterTemplate = "\t\tAltV.Net.Shared.AltShared.RegisterMValueAdapter(new {0}Adapter());";
 
-    internal const string ListAdapterTemplate = "\t\t\tAltV.Net.Shared.AltShared.Core.RegisterMValueAdapter(Elements.Args.DefaultMValueAdapters.GetArrayAdapter(new {0}Adapter()));";
+    internal const string ListAdapterTemplate = "\t\t\tAltV.Net.Shared.AltShared.RegisterMValueAdapter(Elements.Args.DefaultMValueAdapters.GetArrayAdapter(new {0}Adapter()));";
 
-    internal const string LogAdapterTemplate = "\t\t\tAltV.Net.Shared.AltShared.Core.LogInfo($\"Registered MValueAdapter: {0}\");";
+    internal const string LogAdapterTemplate = "\t\t\tAltV.Net.Shared.AltShared.LogInfo($\"Registered MValueAdapter: {0}\");";
 }
