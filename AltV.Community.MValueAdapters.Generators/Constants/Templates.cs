@@ -65,12 +65,6 @@ namespace AltV.Net;
 
 public static class AltExtensions
 {{
-    [System.Obsolete(""This method is deprecated due to bad naming. Use RegisterAdapters(bool registerListAdapters = false, bool logAdapters = false) instead."", false)]
-    public static void RegisterAdapters(bool listAdapters = false, bool logAdapters = false, bool deprecated = true)
-    {{
-        RegisterAdapters(registerListAdapters: listAdapters, logAdapters: logAdapters);
-    }}
-
     public static void RegisterAdapters(bool registerListAdapters = false, bool logAdapters = false)
     {{
 {0}
