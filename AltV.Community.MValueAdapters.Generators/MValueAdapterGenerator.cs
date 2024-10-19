@@ -8,6 +8,7 @@ using AltV.Community.MValueAdapters.Generators.Constants;
 using AltV.Community.MValueAdapters.Generators.Converters;
 using AltV.Community.MValueAdapters.Generators.Models;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -46,8 +47,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             { "char", new CharConverter() },
             // String
             { "string", new StringConverter() },
-			// Enum
-			{ "enum", new EnumConverter() },
+            // Enum
+            { "enum", new EnumConverter() },
             // Guid
             { "Guid", new GuidConverter() },
             // Numerics
@@ -73,17 +74,21 @@ public class MValueAdapterGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var mValues = context
-            .SyntaxProvider
-            .CreateSyntaxProvider(
-                predicate: (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
-                    or StructDeclarationSyntax { AttributeLists.Count: > 0 }
-                    or RecordDeclarationSyntax { AttributeLists.Count: > 0 },
+            .SyntaxProvider.CreateSyntaxProvider(
+                predicate: (node, _) =>
+                    node
+                        is ClassDeclarationSyntax { AttributeLists.Count: > 0 }
+                            or StructDeclarationSyntax { AttributeLists.Count: > 0 }
+                            or RecordDeclarationSyntax { AttributeLists.Count: > 0 },
                 transform: (ctx, _) => GetMValueClasses(ctx)
             )
             .Where(c => c != null);
 
         var compilationModel = context.CompilationProvider.Combine(mValues.Collect());
-        context.RegisterSourceOutput(compilationModel, (sourceContext, source) => Execute(source.Right, sourceContext));
+        context.RegisterSourceOutput(
+            compilationModel,
+            (sourceContext, source) => Execute(source.Right, sourceContext)
+        );
     }
 
     private MValueClassInfo? GetMValueClasses(GeneratorSyntaxContext context)
@@ -93,37 +98,67 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         {
             foreach (var attributeSyntax in attributeListSyntax.Attributes)
             {
-                if (context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
+                if (
+                    context.SemanticModel.GetSymbolInfo(attributeSyntax).Symbol
+                    is not IMethodSymbol attributeSymbol
+                )
                     continue;
 
                 var fqName = attributeSymbol.ContainingType.ToString();
-                if (!fqName.Equals("AltV.Community.MValueAdapters.Generators.MValueAdapterAttribute", StringComparison.Ordinal)) continue;
+                if (
+                    !fqName.Equals(
+                        "AltV.Community.MValueAdapters.Generators.MValueAdapterAttribute",
+                        StringComparison.Ordinal
+                    )
+                )
+                    continue;
 
-                var namingConvention = GetClassNamingConvention(context.SemanticModel, attributeSyntax);
-                var propertyInfos = GetClassProperties(context.SemanticModel, classDeclarationSyntax, namingConvention);
+                var namingConvention = GetClassNamingConvention(
+                    context.SemanticModel,
+                    attributeSyntax
+                );
+                var propertyInfos = GetClassProperties(
+                    context.SemanticModel,
+                    classDeclarationSyntax,
+                    namingConvention
+                );
                 return new MValueClassInfo(
                     classDeclarationSyntax.Identifier.ValueText,
                     GetNamespace(classDeclarationSyntax),
                     propertyInfos,
-                    namingConvention);
+                    namingConvention
+                );
             }
         }
 
         return null;
     }
 
-    private NamingConvention GetClassNamingConvention(SemanticModel semanticModel, AttributeSyntax? attributeSyntax)
+    private NamingConvention GetClassNamingConvention(
+        SemanticModel semanticModel,
+        AttributeSyntax? attributeSyntax
+    )
     {
-        if (attributeSyntax?.ArgumentList is null) return NamingConvention.UsePropertyName;
+        if (attributeSyntax?.ArgumentList is null)
+            return NamingConvention.UsePropertyName;
 
-        var attributeArgumentSyntax = attributeSyntax.ArgumentList.Arguments
-            .FirstOrDefault(x => x.NameEquals is not null && x.Expression is not null && x.NameEquals.Name.Identifier.ValueText.Equals(nameof(NamingConvention), StringComparison.Ordinal));
-        if (attributeArgumentSyntax is null) return NamingConvention.UsePropertyName;
+        var attributeArgumentSyntax = attributeSyntax.ArgumentList.Arguments.FirstOrDefault(x =>
+            x.NameEquals is not null
+            && x.Expression is not null
+            && x.NameEquals.Name.Identifier.ValueText.Equals(
+                nameof(NamingConvention),
+                StringComparison.Ordinal
+            )
+        );
+        if (attributeArgumentSyntax is null)
+            return NamingConvention.UsePropertyName;
 
         var operation = semanticModel.GetOperation(attributeArgumentSyntax.Expression);
-        if (operation is null) return NamingConvention.UsePropertyName;
+        if (operation is null)
+            return NamingConvention.UsePropertyName;
 
-        if (!operation.ConstantValue.HasValue) return NamingConvention.UsePropertyName;
+        if (!operation.ConstantValue.HasValue)
+            return NamingConvention.UsePropertyName;
         return (NamingConvention)operation.ConstantValue.Value!;
     }
 
@@ -133,10 +168,16 @@ public class MValueAdapterGenerator : IIncrementalGenerator
 
         var potentialNamespaceParent = syntax.Parent;
 
-        while (potentialNamespaceParent is not null and not NamespaceDeclarationSyntax and not FileScopedNamespaceDeclarationSyntax)
+        while (
+            potentialNamespaceParent
+                is not null
+                    and not NamespaceDeclarationSyntax
+                    and not FileScopedNamespaceDeclarationSyntax
+        )
             potentialNamespaceParent = potentialNamespaceParent.Parent;
 
-        if (potentialNamespaceParent is not BaseNamespaceDeclarationSyntax namespaceParent) return @namespace;
+        if (potentialNamespaceParent is not BaseNamespaceDeclarationSyntax namespaceParent)
+            return @namespace;
 
         @namespace = namespaceParent.Name.ToString();
 
@@ -152,7 +193,11 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         return @namespace;
     }
 
-    private MValuePropertyInfo[] GetClassProperties(SemanticModel semanticModel, TypeDeclarationSyntax classDeclarationSyntax, NamingConvention namingConvention)
+    private MValuePropertyInfo[] GetClassProperties(
+        SemanticModel semanticModel,
+        TypeDeclarationSyntax classDeclarationSyntax,
+        NamingConvention namingConvention
+    )
     {
         var handledProperties = new List<MValuePropertyInfo>();
         var classProperties = classDeclarationSyntax.Members.OfType<PropertyDeclarationSyntax>();
@@ -164,13 +209,27 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         string? additionalUsing = null;
         foreach (var propertyDeclarationSyntax in classProperties)
         {
+            // If property has no set accessor
+            if (
+                propertyDeclarationSyntax.AccessorList is null
+                || !propertyDeclarationSyntax.AccessorList.Accessors.Any(a =>
+                    a.IsKind(SyntaxKind.SetAccessorDeclaration)
+                )
+            )
+            {
+                continue;
+            }
+
             skipProperty = false;
             customName = null;
             underlyingEnumTypeName = null;
 
             // Check if the property is an enum and retrieve underlying type
-            if (semanticModel.GetTypeInfo(propertyDeclarationSyntax.Type).Type is INamedTypeSymbol namedTypeSymbol
-                && namedTypeSymbol.TypeKind == TypeKind.Enum)
+            if (
+                semanticModel.GetTypeInfo(propertyDeclarationSyntax.Type).Type
+                    is INamedTypeSymbol namedTypeSymbol
+                && namedTypeSymbol.TypeKind == TypeKind.Enum
+            )
             {
                 underlyingEnumTypeName = namedTypeSymbol.EnumUnderlyingType!.ToString();
                 additionalUsing = namedTypeSymbol.ContainingNamespace.ToDisplayString();
@@ -180,7 +239,10 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             {
                 foreach (var attributeSyntax in attributeListSyntax.Attributes)
                 {
-                    if (semanticModel.GetSymbolInfo(attributeSyntax).Symbol is not IMethodSymbol attributeSymbol)
+                    if (
+                        semanticModel.GetSymbolInfo(attributeSyntax).Symbol
+                        is not IMethodSymbol attributeSymbol
+                    )
                         continue;
 
                     var fqName = attributeSymbol.ContainingType.ToString();
@@ -190,26 +252,37 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                             skipProperty = true;
                             break;
                         case var _ when fqName == typeof(MValuePropertyNameAttribute).FullName:
-                            customName = attributeSyntax.ArgumentList!.Arguments[0].GetFirstToken().ValueText;
+                            customName = attributeSyntax
+                                .ArgumentList!.Arguments[0]
+                                .GetFirstToken()
+                                .ValueText;
                             break;
                     }
                 }
 
-                if (skipProperty) break;
+                if (skipProperty)
+                    break;
             }
 
-            if (skipProperty) continue;
+            if (skipProperty)
+                continue;
 
             if (customName == null && namingConvention != NamingConvention.UsePropertyName)
-                customName = NamingConventionHelpers.GetName(propertyDeclarationSyntax.Identifier.ValueText, namingConvention);
+                customName = NamingConventionHelpers.GetName(
+                    propertyDeclarationSyntax.Identifier.ValueText,
+                    namingConvention
+                );
 
             var propertyData = GetPropertyData(propertyDeclarationSyntax.Type.ToString());
-            handledProperties.Add(new MValuePropertyInfo(
-                propertyData,
-                propertyDeclarationSyntax.Identifier.ValueText,
-                customName,
-                underlyingEnumTypeName,
-                additionalUsing));
+            handledProperties.Add(
+                new MValuePropertyInfo(
+                    propertyData,
+                    propertyDeclarationSyntax.Identifier.ValueText,
+                    customName,
+                    underlyingEnumTypeName,
+                    additionalUsing
+                )
+            );
         }
 
         return handledProperties.ToArray();
@@ -244,7 +317,8 @@ public class MValueAdapterGenerator : IIncrementalGenerator
             type = type.Substring(12, type.Length - 13);
         }
 
-        if (propertyType == PropertyType.Default) return new PropertyData(propertyType, type, nullable);
+        if (propertyType == PropertyType.Default)
+            return new PropertyData(propertyType, type, nullable);
 
         // Nullable collections
         var nullableCollection = IsTypeNullable(ref type);
@@ -275,16 +349,19 @@ public class MValueAdapterGenerator : IIncrementalGenerator
         var logAdaptersBuilder = new StringBuilder();
         foreach (var classInfo in classes)
         {
-            if (classInfo == null) continue;
+            if (classInfo == null)
+                continue;
 
             var readerIndentation = 4;
             var readerCode = new StringBuilder();
             var writerIndentation = 2;
             var writerCode = new StringBuilder();
-            var additionalUsings = new HashSet<string>(classInfo.PropertyInfos
-                .Where(static x => x.AdditionalUsing is not null)
-                .Select(static x => x.AdditionalUsing)
-                .Cast<string>());
+            var additionalUsings = new HashSet<string>(
+                classInfo
+                    .PropertyInfos.Where(static x => x.AdditionalUsing is not null)
+                    .Select(static x => x.AdditionalUsing)
+                    .Cast<string>()
+            );
             if (!string.IsNullOrEmpty(classInfo.Namespace))
             {
                 additionalUsings.Add(classInfo.Namespace);
@@ -299,7 +376,11 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 {
                     foreach (var @class in classes)
                     {
-                        if (@class is null || !@class.Name.Equals(typeName, StringComparison.Ordinal)) continue;
+                        if (
+                            @class is null
+                            || !@class.Name.Equals(typeName, StringComparison.Ordinal)
+                        )
+                            continue;
                         converter = new ByAdapterConverter(typeName);
                         additionalUsings.Add(@class.Namespace);
                         break;
@@ -332,8 +413,18 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 }
                 else
                 {
-                    converter.ReadCollection(readerCode, ref readerIndentation, classInfo, propertyInfo);
-                    converter.WriteCollection(writerCode, ref writerIndentation, classInfo, propertyInfo);
+                    converter.ReadCollection(
+                        readerCode,
+                        ref readerIndentation,
+                        classInfo,
+                        propertyInfo
+                    );
+                    converter.WriteCollection(
+                        writerCode,
+                        ref writerIndentation,
+                        classInfo,
+                        propertyInfo
+                    );
                 }
             }
 
@@ -351,16 +442,25 @@ public class MValueAdapterGenerator : IIncrementalGenerator
                 )
             );
             adaptersBuilder.AppendLine(string.Format(Templates.AdapterTemplate, classInfo.Name));
-            listAdaptersBuilder.AppendLine(string.Format(Templates.ListAdapterTemplate, classInfo.Name));
-            logAdaptersBuilder.AppendLine(string.Format(Templates.LogAdapterTemplate, classInfo.Name));
+            listAdaptersBuilder.AppendLine(
+                string.Format(Templates.ListAdapterTemplate, classInfo.Name)
+            );
+            logAdaptersBuilder.AppendLine(
+                string.Format(Templates.LogAdapterTemplate, classInfo.Name)
+            );
         }
 
         context.AddSource(
             "MValueAdapters.Generators.AltExtensions.g.cs",
-            SourceText.From(string.Format(
-                Templates.ExtensionTemplate,
-                adaptersBuilder.ToString(),
-                listAdaptersBuilder.ToString(),
-                logAdaptersBuilder.ToString()), Encoding.UTF8));
+            SourceText.From(
+                string.Format(
+                    Templates.ExtensionTemplate,
+                    adaptersBuilder.ToString(),
+                    listAdaptersBuilder.ToString(),
+                    logAdaptersBuilder.ToString()
+                ),
+                Encoding.UTF8
+            )
+        );
     }
 }
