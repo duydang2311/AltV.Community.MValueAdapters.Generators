@@ -1,3 +1,5 @@
+#### This repository has been archived and migrated to [AltV.Community](https://github.com/duydang2311/AltV.Community) monorepo.
+
 ## AltV.Community.MValueAdapters.Generators
 
 [![NuGet badge](https://img.shields.io/nuget/v/AltV.Community.MValueAdapters.Generators?color=blue&cacheSeconds=3600)](https://www.nuget.org/packages/AltV.Community.MValueAdapters.Generators/)
